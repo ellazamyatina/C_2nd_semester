@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/ella/C_2nd_semester/build",
+  "command": "/usr/bin/gcc -g -o src/h0/CMakeFiles/hello.dir/hello.c.o -c /home/ella/C_2nd_semester/src/h0/hello.c",
+  "file": "/home/ella/C_2nd_semester/src/h0/hello.c",
+  "output": "/home/ella/C_2nd_semester/build/src/h0/CMakeFiles/hello.dir/hello.c.o"
+}
+]
