@@ -1,7 +1,9 @@
 ## C Programming Repository, 2nd Semester
 
-> [mail]
-> ellazamyatina567@gmail.com
+> mail
 > 
-> [tg]
-> @brbdbrd
+ellazamyatina567@gmail.com
+
+> telegram
+> 
+@brbdbrd
