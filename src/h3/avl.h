@@ -47,7 +47,7 @@ void preOrder(Node* root);
 struct Node* findMin(Node* root);
 
 // deletes a node with the given key
-struct Node* delete (Node* root, int key);
+struct Node* deleteNode(Node* root, int key);
 
 // frees all memory allocated for the AVL tree
 void freeTree(Node* root);

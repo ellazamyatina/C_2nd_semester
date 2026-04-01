@@ -83,7 +83,7 @@ static void handleDelete(const char* code)
         return;
     }
 
-    root = delete(root, intCode);
+    root = deleteNode(root, intCode);
     printf("Airport '%s' deleted from database.\n", code);
 }
 
