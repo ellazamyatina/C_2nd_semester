@@ -1,0 +1,1 @@
+add_executable(cities main.c cities.c)
