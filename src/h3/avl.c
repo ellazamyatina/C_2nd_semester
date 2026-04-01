@@ -157,15 +157,15 @@ Node* findMin(Node* root)
     return root;
 }
 
-Node* delete (Node* root, int key)
+Node* delete(Node* root, int key)
 {
     if (root == NULL) {
         return NULL;
     }
     if (key < root->key) {
-        root->left = delete (root->left, key);
+        root->left = delete(root->left, key);
     } else if (key > root->key) {
-        root->right = delete (root->right, key);
+        root->right = delete(root->right, key);
     } else {
         if (root->left == NULL && root->right == NULL) {
             free(root);
@@ -182,7 +182,7 @@ Node* delete (Node* root, int key)
         } else {
             Node* ptr = findMin(root->right);
             root->key = ptr->key;
-            root->right = delete (root->right, ptr->key);
+            root->right = delete(root->right, ptr->key);
         }
     }
     int leftHeight = 0;

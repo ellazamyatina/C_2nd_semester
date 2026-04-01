@@ -2,11 +2,11 @@
 #include "avl.h"
 
 typedef struct {
-    int code;      // IATA as a number
-    char* name;    // name of the airport
+    int code; // IATA as a number
+    char* name; // name of the airport
 } Airport;
 
-// converts IATA code to an integer 
+// converts IATA code to an integer
 int IATAToInt(const char* code);
 
 // converts an integer back to a IATA code
