@@ -2,7 +2,13 @@
 
 #include <stdbool.h>
 
-typedef struct Node Node;
+typedef struct Node {
+    int key;
+    int balance;
+    struct Node* left;
+    struct Node* right;
+    void* data;
+} Node;
 
 // creates a new node with the given key value
 struct Node* createNewNode(int value);
@@ -13,10 +19,10 @@ struct Node* rotateLeft(Node* a);
 // performs a right rotation on the given node
 struct Node* rotateRight(Node* a);
 
-// performs a big left rotation 
+// performs a big left rotation
 struct Node* bigRotateLeft(Node* node);
 
-// performs a big right rotation 
+// performs a big right rotation
 struct Node* bigRotateRight(Node* node);
 
 // balances the AVL tree starting from the given node
@@ -40,8 +46,8 @@ void preOrder(Node* root);
 // finds the node with the minimum key in the tree
 struct Node* findMin(Node* root);
 
-// deletes a node with the given key 
-struct Node* delete(Node* root, int key);
+// deletes a node with the given key
+struct Node* delete (Node* root, int key);
 
 // frees all memory allocated for the AVL tree
-void freeTree(Node* root); 
+void freeTree(Node* root);
