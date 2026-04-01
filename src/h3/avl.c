@@ -17,7 +17,6 @@ Node* rotateLeft(Node* a)
     Node* c = b->left;
     b->left = a;
     a->right = c;
-    // Обновление балансов
     if (c == NULL) {
         a->balance = 0;
         b->balance = 0;
@@ -42,7 +41,6 @@ Node* rotateRight(Node* a)
     Node* c = b->right;
     b->right = a;
     a->left = c;
-    // Обновление балансов
     if (c == NULL) {
         a->balance = 0;
         b->balance = 0;
