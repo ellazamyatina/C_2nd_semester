@@ -1,21 +1,54 @@
-#ifndef CITIES_H
-#define CITIES_H
-
+#pragma once
+#include "dijkstra.h"
 #include <stddef.h>
 
-typedef struct {
-    int city;
-    int dist;
-} NearestCity;
+typedef DIJKGraph Graph;
+typedef DIJKResult DIJKResult;
 
+// creates a graph for n cities
+Graph createGraph(int n);
+
+// adds a road between two cities
+void addEdge(Graph* graph, int from, int to, int len);
+
+// frees all memory associated with the graph
+void freeGraph(Graph* graph);
+
+/**
+ * Priority queue structure for state expansion.
+ */
 typedef struct {
-    int* cities;
-    size_t count;
-    size_t capacity;
+    int* itemsDist; /**< Shortest distances from state to each city */
+    void* pq; /**< Internal priority queue for unassigned cities */
+} StatePQ;
+
+// creates a priority queue for a state
+StatePQ createStatePQ(int n, int* stateCities, int cityCount, Graph* graph);
+
+// frees all memory associated with StatePQ
+void freeStatePQ(StatePQ* spq);
+
+// finds the nearest unassigned city to the state
+int findNearestCity(StatePQ* spq, int n, int* visited);
+
+// updates the state's distances after adding a new city
+void updateStatePQ(StatePQ* spq, int newCity, Graph* graph);
+
+// checks if any cities remain unassigned
+int anyUnassigned(int n, int* visited);
+
+// dynamic array of city indices
+typedef struct {
+    int* cities; /**< Array of city indices */
+    size_t count; /**< Current number of cities */
+    size_t capacity; /**< Current capacity of the array */
 } CityList;
 
+// frees all memory associated with City list
 void freeCityList(CityList* list);
-int addCityToList(CityList* list, int city);
-void printStateAllocation(int n, int k, CityList* states);
 
-#endif
+// adds a city to the CityList
+int addCityToList(CityList* list, int city);
+
+// prints the allocation of cities
+void printStateAllocation(int n, int k, CityList* states);
