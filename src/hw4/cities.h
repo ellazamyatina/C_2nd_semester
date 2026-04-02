@@ -16,8 +16,8 @@ void freeGraph(Graph* graph);
 
 // priority queue structure for state expansion
 typedef struct {
-    int* itemsDist; 
-    void* pq; 
+    int* itemsDist;
+    void* pq;
 } StatePQ;
 
 // creates a priority queue for a state
@@ -37,9 +37,9 @@ int anyUnassigned(int n, int* visited);
 
 // dynamic array of city indices
 typedef struct {
-    int* cities; 
-    size_t count; 
-    size_t capacity; 
+    int* cities;
+    size_t count;
+    size_t capacity;
 } CityList;
 
 // frees all memory associated with City list
