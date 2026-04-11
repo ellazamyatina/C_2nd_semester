@@ -125,7 +125,7 @@ int main(int argc, char* argv[])
     }
 
     char line[1024];
-    while (1) {
+    while (true) {
         printPrompt();
 
         if (!fgets(line, sizeof(line), stdin)) {
