@@ -2,52 +2,19 @@
 
 #include <stdbool.h>
 
-typedef struct Node {
-    int key;
-    int balance;
-    struct Node* left;
-    struct Node* right;
-    void* data;
-} Node;
+typedef struct AVLTree AVLTree;
 
-// creates a new node with the given key value
-struct Node* createNewNode(int value);
-
-// performs a left rotation on the given node
-struct Node* rotateLeft(Node* a);
-
-// performs a right rotation on the given node
-struct Node* rotateRight(Node* a);
-
-// performs a big left rotation
-struct Node* bigRotateLeft(Node* node);
-
-// performs a big right rotation
-struct Node* bigRotateRight(Node* node);
-
-// balances the AVL tree starting from the given node
-struct Node* balance(Node* node);
+// creates a new tree 
+AVLTree* avl_create(void);
 
 // searches for a node with the given key
-struct Node* searchNode(Node* root, int value);
+void* avl_search(AVLTree* tree, int value);
 
 // inserts a new key into the AVL tree
-struct Node* insertNode(Node* node, int value);
-
-// performs post-order traversal of the tree
-void postOrder(Node* root);
-
-// performs in-order traversal of the tree
-void inOrder(Node* root);
-
-// performs pre-order traversal of the tree
-void preOrder(Node* root);
-
-// finds the node with the minimum key in the tree
-struct Node* findMin(Node* root);
+void avl_insert(AVLTree* tree, int value, void* data);
 
 // deletes a node with the given key
-struct Node* deleteNode(Node* root, int key);
+void avl_delete(AVLTree* tree, int key);
 
 // frees all memory allocated for the AVL tree
-void freeTree(Node* root);
+void avl_free(AVLTree* tree);
