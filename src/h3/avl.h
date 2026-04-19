@@ -4,17 +4,11 @@
 
 typedef struct AVLTree AVLTree;
 
-// creates a new tree 
-AVLTree* avl_create(void);
-
-// searches for a node with the given key
-void* avl_search(AVLTree* tree, int value);
-
-// inserts a new key into the AVL tree
-void avl_insert(AVLTree* tree, int value, void* data);
-
-// deletes a node with the given key
-void avl_delete(AVLTree* tree, int key);
-
-// frees all memory allocated for the AVL tree
-void avl_free(AVLTree* tree);
+AVLTree* avlCreate(void);
+AVLTree* loadBase(const char* filename);
+char* avlSearch(AVLTree* tree, const char* code);
+void avlInsert(AVLTree* tree, const char* code, const char* name);
+void avlDelete(AVLTree* tree, const char* code);
+void avlFree(AVLTree* tree);
+void avlSave(AVLTree* tree, const char* filename);
+int avlSize(AVLTree* tree);

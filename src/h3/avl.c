@@ -9,16 +9,18 @@ typedef struct Node {
     int balance;
     struct Node* left;
     struct Node* right;
-} Node; 
+} Node;
 
-typedef struct AVLTree{
+typedef struct AVLTree {
     Node* root;
     int size;
-}AVLTree;
+} AVLTree;
 
-static Node* createNewNode(const char* code, const char* name){
+static Node* createNewNode(const char* code, const char* name)
+{
     Node* node = (Node*)malloc(sizeof(Node));
-    if (!node) return NULL;
+    if (!node)
+        return NULL;
 
     node->code = strdup(code);
     node->name = strdup(name);
@@ -28,8 +30,9 @@ static Node* createNewNode(const char* code, const char* name){
     return node;
 }
 
-static void freeNode(Node* node){
-    if(node){
+static void freeNode(Node* node)
+{
+    if (node) {
         free(node->code);
         free(node->name);
         free(node);
@@ -138,13 +141,13 @@ static Node* insertNode(Node* node, const char* code, const char* name)
         return createNewNode(code, name);
     }
     int tmp = strcmp(code, node->code);
-    if (tmp<0){
+    if (tmp < 0) {
         node->left = insertNode(node->left, code, name);
         node->balance--;
-    }else if (tmp > 0){
+    } else if (tmp > 0) {
         node->right = insertNode(node->right, code, name);
         node->balance++;
-    }else{   //dublicate
+    } else { // dublicate
         free(node->name);
         node->name = strdup(name);
         return node;
@@ -154,7 +157,8 @@ static Node* insertNode(Node* node, const char* code, const char* name)
 
 static void saveInOrder(Node* node, FILE* file)
 {
-    if (node == NULL) return;
+    if (node == NULL)
+        return;
     saveInOrder(node->left, file);
     fprintf(file, "%s:%s\n", node->code, node->name);
     saveInOrder(node->right, file);
@@ -162,8 +166,8 @@ static void saveInOrder(Node* node, FILE* file)
 
 Node* findMin(Node* node)
 {
-    while(node&&node->left !=NULL){
-        node= node->left;
+    while (node && node->left != NULL) {
+        node = node->left;
     }
     return node;
 }
@@ -174,19 +178,19 @@ static Node* deleteNode(Node* root, const char* code)
         return NULL;
     }
     int tmp = strcmp(code, root->code);
-    if (tmp<0){
+    if (tmp < 0) {
         root->left = deleteNode(root->left, code);
-    }else if (tmp > 0){
+    } else if (tmp > 0) {
         root->right = deleteNode(root->right, code);
-    }else{
-        if(root->left == NULL && root->right == NULL){
+    } else {
+        if (root->left == NULL && root->right == NULL) {
             freeNode(root);
             return NULL;
-        }else if (root->left == NULL || root->right == NULL){
-            Node* tmp2 = root->left ? root->left: root->right;
+        } else if (root->left == NULL || root->right == NULL) {
+            Node* tmp2 = root->left ? root->left : root->right;
             freeNode(root);
             return tmp2;
-        }else{
+        } else {
             Node* min = findMin(root->right);
             free(root->code);
             free(root->name);
@@ -197,25 +201,31 @@ static Node* deleteNode(Node* root, const char* code)
     }
     int leftHeight = 0, rightHeight = 0;
 
-    if(root->left != NULL){
-        if(root->left->balance > 0) leftHeight = 2;
-        else if (root->left->balance <0) leftHeight  = 0;
-        else leftHeight = 1;
+    if (root->left != NULL) {
+        if (root->left->balance > 0)
+            leftHeight = 2;
+        else if (root->left->balance < 0)
+            leftHeight = 0;
+        else
+            leftHeight = 1;
     }
     if (root->right != NULL) {
-        if (root->right->balance > 0) rightHeight = 2;
-        else if (root->right->balance < 0) rightHeight = 0;
-        else rightHeight = 1;
+        if (root->right->balance > 0)
+            rightHeight = 2;
+        else if (root->right->balance < 0)
+            rightHeight = 0;
+        else
+            rightHeight = 1;
     }
-    
+
     root->balance = rightHeight - leftHeight;
-    
+
     return balance(root);
 }
 
 void freeTree(Node* node)
 {
-    if (node== NULL) {
+    if (node == NULL) {
         return;
     }
     freeTree(node->left);
@@ -226,8 +236,9 @@ void freeTree(Node* node)
 AVLTree* avlCreate(void)
 {
     AVLTree* tree = malloc(sizeof(AVLTree));
-    if (!tree) return NULL;
-    
+    if (!tree)
+        return NULL;
+
     tree->root = NULL;
     tree->size = 0;
     return tree;
@@ -235,28 +246,31 @@ AVLTree* avlCreate(void)
 
 char* avlSearch(AVLTree* tree, const char* code)
 {
-    if (!tree || !code) return NULL;
-    
+    if (!tree || !code)
+        return NULL;
+
     Node* node = searchNode(tree->root, code);
     return node ? node->name : NULL;
 }
 
 void avlInsert(AVLTree* tree, const char* code, const char* name)
 {
-    if (!tree || !code || !name) return;
-    
+    if (!tree || !code || !name)
+        return;
+
     if (avlSearch(tree, code) != NULL) {
-        return; 
+        return;
     }
-    
+
     tree->root = insertNode(tree->root, code, name);
     tree->size++;
 }
 
 void avlDelete(AVLTree* tree, const char* code)
 {
-    if (!tree || !code) return;
-    
+    if (!tree || !code)
+        return;
+
     if (searchNode(tree->root, code) != NULL) {
         tree->root = deleteNode(tree->root, code);
         tree->size--;
@@ -265,18 +279,21 @@ void avlDelete(AVLTree* tree, const char* code)
 
 void avlFree(AVLTree* tree)
 {
-    if (!tree) return;
+    if (!tree)
+        return;
     freeTree(tree->root);
     free(tree);
 }
 
 void avlSave(AVLTree* tree, const char* filename)
 {
-    if (!tree || !filename) return;
-    
+    if (!tree || !filename)
+        return;
+
     FILE* file = fopen(filename, "w");
-    if (!file) return;
-    
+    if (!file)
+        return;
+
     saveInOrder(tree->root, file);
     fclose(file);
 }
@@ -293,37 +310,39 @@ AVLTree* loadBase(const char* filename)
         printf("Error: Cannot open file '%s'\n", filename);
         return NULL;
     }
-    
+
     AVLTree* tree = avlCreate();
     if (!tree) {
         fclose(file);
         return NULL;
     }
-    
+
     char line[512];
     int count = 0;
-    
+
     while (fgets(line, sizeof(line), file)) {
         size_t len = strlen(line);
-        if (len > 0 && line[len-1] == '\n') {
-            line[len-1] = '\0';
+        if (len > 0 && line[len - 1] == '\n') {
+            line[len - 1] = '\0';
         }
-        
+
         char* colon = strchr(line, ':');
-        if (!colon) continue;
-        
+        if (!colon)
+            continue;
+
         *colon = '\0';
         char* code = line;
         char* name = colon + 1;
-        
-        if (strlen(code) != 3) continue;
-        
+
+        if (strlen(code) != 3)
+            continue;
+
         avlInsert(tree, code, name);
         count++;
     }
-    
+
     fclose(file);
     printf("Loaded %d airports. System ready.\n", count);
-    
+
     return tree;
 }
