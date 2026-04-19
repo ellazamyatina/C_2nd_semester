@@ -160,34 +160,6 @@ static void saveInOrder(Node* node, FILE* file)
     saveInOrder(node->right, file);
 }
 
-
-void postOrder(Node* root)
-{ //
-    if (root != NULL) {
-        postOrder(root->left);
-        postOrder(root->right);
-        printf("%d(balance:%d)\r\n", root->key, root->balance);
-    }
-}
-
-void inOrder(Node* root)
-{
-    if (root != NULL) {
-        inOrder(root->left);
-        printf("%d(balance:%d)\r\n", root->key, root->balance);
-        inOrder(root->right);
-    }
-}
-
-void preOrder(Node* root)
-{
-    if (root != NULL) {
-        printf("%d(balance:%d)\r\n", root->key, root->balance);
-        preOrder(root->left);
-        preOrder(root->right);
-    }
-}
-
 Node* findMin(Node* node)
 {
     while(node&&node->left !=NULL){
@@ -213,6 +185,7 @@ static Node* deleteNode(Node* root, const char* code)
         }else if (root->left == NULL || root->right == NULL){
             Node* tmp2 = root->left ? root->left: root->right;
             freeNode(root);
+            return tmp2;
         }else{
             Node* min = findMin(root->right);
             free(root->code);
@@ -272,9 +245,8 @@ void avlInsert(AVLTree* tree, const char* code, const char* name)
 {
     if (!tree || !code || !name) return;
     
-    // Проверяем, существует ли уже
     if (avlSearch(tree, code) != NULL) {
-        return; // Уже есть
+        return; 
     }
     
     tree->root = insertNode(tree->root, code, name);
