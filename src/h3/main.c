@@ -3,6 +3,50 @@
 #include <stdio.h>
 #include <string.h>
 
+AVLTree* loadBase(const char* filename)
+{
+    FILE* file = fopen(filename, "r");
+    if (!file) {
+        printf("Error: Cannot open file '%s'\n", filename);
+        return NULL;
+    }
+
+    AVLTree* tree = avlCreate();
+    if (!tree) {
+        fclose(file);
+        return NULL;
+    }
+
+    char line[512];
+    int count = 0;
+
+    while (fgets(line, sizeof(line), file)) {
+        size_t len = strlen(line);
+        if (len > 0 && line[len - 1] == '\n') {
+            line[len - 1] = '\0';
+        }
+
+        char* colon = strchr(line, ':');
+        if (!colon)
+            continue;
+
+        *colon = '\0';
+        char* code = line;
+        char* name = colon + 1;
+
+        if (strlen(code) != 3)
+            continue;
+
+        avlInsert(tree, code, name);
+        count++;
+    }
+
+    fclose(file);
+    printf("Loaded %d airports. System ready.\n", count);
+
+    return tree;
+}
+
 static void printPrompt(void)
 {
     printf("> ");
@@ -63,7 +107,6 @@ int main(int argc, char* argv[])
         if (strlen(line) == 0)
             continue;
 
-        // Парсим команду
         char* command = line;
         char* arg = strchr(line, ' ');
 
@@ -132,7 +175,26 @@ int main(int argc, char* argv[])
             printf("Airport '%s' deleted from database.\n", arg);
 
         } else if (strcmp(command, "save") == 0) {
-            avlSave(tree, argv[1]);
+            FILE* file = fopen(argv[1], "w");
+            if (!file) {
+                printf("Error: Cannot save to file '%s'\n", argv[1]);
+                continue;
+            }
+
+            AVLIterator* iter = avlIteratorCreate(tree);
+            if (!iter) {
+                fclose(file);
+                printf("Error: Cannot create iterator\n");
+                continue;
+            }
+
+            const char* code;
+            const char* name;
+            while (avlIteratorNext(iter, &code, &name)) {
+                fprintf(file, "%s:%s\n", code, name);
+            }
+            avlIteratorFree(iter);
+            fclose(file);
             printf("Database saved: %d airports.\n", avlSize(tree));
 
         } else if (strcmp(command, "quit") == 0) {

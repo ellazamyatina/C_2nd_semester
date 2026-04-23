@@ -155,16 +155,7 @@ static Node* insertNode(Node* node, const char* code, const char* name)
     return balance(node);
 }
 
-static void saveInOrder(Node* node, FILE* file)
-{
-    if (node == NULL)
-        return;
-    saveInOrder(node->left, file);
-    fprintf(file, "%s:%s\n", node->code, node->name);
-    saveInOrder(node->right, file);
-}
-
-Node* findMin(Node* node)
+static Node* findMin(Node* node)
 {
     while (node && node->left != NULL) {
         node = node->left;
@@ -199,26 +190,6 @@ static Node* deleteNode(Node* root, const char* code)
             root->right = deleteNode(root->right, min->code);
         }
     }
-    int leftHeight = 0, rightHeight = 0;
-
-    if (root->left != NULL) {
-        if (root->left->balance > 0)
-            leftHeight = 2;
-        else if (root->left->balance < 0)
-            leftHeight = 0;
-        else
-            leftHeight = 1;
-    }
-    if (root->right != NULL) {
-        if (root->right->balance > 0)
-            rightHeight = 2;
-        else if (root->right->balance < 0)
-            rightHeight = 0;
-        else
-            rightHeight = 1;
-    }
-
-    root->balance = rightHeight - leftHeight;
 
     return balance(root);
 }
@@ -285,64 +256,66 @@ void avlFree(AVLTree* tree)
     free(tree);
 }
 
-void avlSave(AVLTree* tree, const char* filename)
-{
-    if (!tree || !filename)
-        return;
-
-    FILE* file = fopen(filename, "w");
-    if (!file)
-        return;
-
-    saveInOrder(tree->root, file);
-    fclose(file);
-}
-
 int avlSize(AVLTree* tree)
 {
     return tree ? tree->size : 0;
 }
 
-AVLTree* loadBase(const char* filename)
+typedef struct AVLIterator {
+    Node** stack;
+    int top;
+    int capacity;
+} AVLIterator;
+
+AVLIterator* avlIteratorCreate(AVLTree* tree)
 {
-    FILE* file = fopen(filename, "r");
-    if (!file) {
-        printf("Error: Cannot open file '%s'\n", filename);
+    if (!tree || !tree->root)
+        return NULL;
+
+    AVLIterator* iter = malloc(sizeof(AVLIterator));
+    if (!iter)
+        return NULL;
+
+    iter->capacity = 64;
+    iter->stack = malloc(sizeof(Node*) * iter->capacity);
+    if (!iter->stack) {
+        free(iter);
         return NULL;
     }
 
-    AVLTree* tree = avlCreate();
-    if (!tree) {
-        fclose(file);
-        return NULL;
-    }
+    iter->top = 0;
+    iter->stack[iter->top++] = tree->root;
 
-    char line[512];
-    int count = 0;
+    return iter;
+}
 
-    while (fgets(line, sizeof(line), file)) {
-        size_t len = strlen(line);
-        if (len > 0 && line[len - 1] == '\n') {
-            line[len - 1] = '\0';
+bool avlIteratorNext(AVLIterator* iter, const char** code, const char** name)
+{
+    if (!iter || iter->top == 0)
+        return false;
+
+    Node* node = iter->stack[--iter->top];
+
+    if (code)
+        *code = node->code;
+    if (name)
+        *name = node->name;
+
+    if (node->left) {
+        Node* curr = node->left;
+        while (curr) {
+            iter->stack[iter->top++] = curr;
+            curr = curr->right;
         }
-
-        char* colon = strchr(line, ':');
-        if (!colon)
-            continue;
-
-        *colon = '\0';
-        char* code = line;
-        char* name = colon + 1;
-
-        if (strlen(code) != 3)
-            continue;
-
-        avlInsert(tree, code, name);
-        count++;
     }
 
-    fclose(file);
-    printf("Loaded %d airports. System ready.\n", count);
+    return true;
+}
 
-    return tree;
+void avlIteratorFree(AVLIterator* iter)
+{
+    if (!iter)
+        return;
+    free(iter->stack);
+    free(iter);
 }

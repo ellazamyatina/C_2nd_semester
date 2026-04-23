@@ -3,6 +3,64 @@
 #include <stdio.h>
 #include <string.h>
 
+static void saveToFile(AVLTree* tree, const char* filename)
+{
+    FILE* file = fopen(filename, "w");
+    if (!file)
+        return;
+
+    AVLIterator* iter = avlIteratorCreate(tree);
+    if (!iter) {
+        fclose(file);
+        return;
+    }
+
+    const char* code;
+    const char* name;
+    while (avlIteratorNext(iter, &code, &name)) {
+        fprintf(file, "%s:%s\n", code, name);
+    }
+    avlIteratorFree(iter);
+    fclose(file);
+}
+
+static AVLTree* loadFromFile(const char* filename)
+{
+    FILE* file = fopen(filename, "r");
+    if (!file)
+        return NULL;
+
+    AVLTree* tree = avlCreate();
+    if (!tree) {
+        fclose(file);
+        return NULL;
+    }
+
+    char line[512];
+    while (fgets(line, sizeof(line), file)) {
+        size_t len = strlen(line);
+        if (len > 0 && line[len - 1] == '\n') {
+            line[len - 1] = '\0';
+        }
+
+        char* colon = strchr(line, ':');
+        if (!colon)
+            continue;
+
+        *colon = '\0';
+        char* code = line;
+        char* name = colon + 1;
+
+        if (strlen(code) != 3)
+            continue;
+
+        avlInsert(tree, code, name);
+    }
+
+    fclose(file);
+    return tree;
+}
+
 int main(void)
 {
     printf("Testing AVL AIRPORT Tree...\n");
@@ -30,10 +88,10 @@ int main(void)
     printf("Delete works\n");
 
     // test 4
-    avlSave(tree, "test.txt");
+    saveToFile(tree, "test.txt");
     avlFree(tree);
 
-    tree = loadBase("test.txt");
+    tree = loadFromFile("test.txt");
     assert(tree != NULL);
     assert(avlSearch(tree, "LED") != NULL);
     printf("Save and load work\n");
