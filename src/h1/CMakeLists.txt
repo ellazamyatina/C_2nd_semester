@@ -11,7 +11,7 @@ add_custom_target(run_tests
     COMMAND test_csv_printer
     DEPENDS test_csv_printer
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    COMMENT "Запускаем тесты..."
+    COMMENT "Running tests..."
 )
 
 add_dependencies(csv_printer run_tests)
