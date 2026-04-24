@@ -54,12 +54,15 @@ bool readCsv(const char* filename, Table* table)
             table->numCols++;
             token = strtok(NULL, ",");
         }
+
+        if (token != NULL) {
+            fprintf(stderr, "Warning: too many columns (max %d)\n", MAX_COLS);
+        }
     }
 
     // Чтение данных
     while (fgets(buffer, sizeof(buffer), file) != NULL && row < MAX_ROWS) {
         buffer[strcspn(buffer, "\n")] = '\0';
-
         int col = 0;
         char* start = buffer;
         char* comma;
@@ -81,6 +84,10 @@ bool readCsv(const char* filename, Table* table)
         }
 
         row++;
+    }
+
+    if (fgets(buffer, sizeof(buffer), file) != NULL) {
+        fprintf(stderr, "Warning: too many rows (max %d)\n", MAX_ROWS);
     }
 
     table->numRows = row;
