@@ -1,7 +1,7 @@
 #include "dfa.h"
+#include <ctype.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include <ctype.h>
 
 static bool isValidSymbol(char symbol)
 {
