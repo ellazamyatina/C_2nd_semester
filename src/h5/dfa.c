@@ -1,6 +1,13 @@
 #include "dfa.h"
 #include <stdbool.h>
 #include <stddef.h>
+#include <ctype.h>
+
+static bool isValidSymbol(char symbol)
+{
+    return isdigit((unsigned char)symbol) || symbol == '.' || symbol == 'E' || symbol == 'e'
+        || symbol == '+' || symbol == '-';
+}
 
 static int findTransition(DFA* dfa, int currentState, char symbol)
 {
@@ -37,11 +44,17 @@ DfaErrorCode dfaCheckString(DFA* dfa, const char* input, bool* result)
 
     for (int i = 0; input[i] != '\0'; i++) {
         char symbol = input[i];
+
+        if (!isValidSymbol(symbol)) {
+            *result = false;
+            return DFA_INVALID_SYMBOL;
+        }
+
         int nextState = findTransition(dfa, currentState, symbol);
 
         if (nextState == -1) {
             *result = false;
-            return DFA_INVALID_SYMBOL;
+            return DFA_INVALID_TRANSITION;
         }
 
         currentState = nextState;
