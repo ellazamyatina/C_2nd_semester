@@ -1,12 +1,13 @@
 #include "csvPrinter.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-int isNumber(const char* str)
+bool isNumber(const char* str)
 {
     if (str == NULL || *str == '\0')
-        return 0;
+        return false;
 
     char* endptr;
     strtod(str, &endptr);
@@ -29,12 +30,12 @@ void freeTable(Table* table)
     }
 }
 
-int readCsv(const char* filename, Table* table)
+bool readCsv(const char* filename, Table* table)
 {
     FILE* file = fopen(filename, "r");
     if (file == NULL) {
         printf("file not found!\n");
-        return 1;
+        return false;
     }
 
     char buffer[BUFFER_SIZE];
@@ -84,7 +85,7 @@ int readCsv(const char* filename, Table* table)
 
     table->numRows = row;
     fclose(file);
-    return 0;
+    return true;
 }
 
 static void calculateColumnWidths(Table* table)
@@ -141,11 +142,11 @@ static void writeRow(FILE* out, Table* table, int row, int isHeader)
     fprintf(out, "\n");
 }
 
-int writeTable(const char* filename, Table* table)
+bool writeTable(const char* filename, Table* table)
 {
     FILE* out = fopen(filename, "w");
     if (out == NULL) {
-        return -1;
+        return false;
     }
 
     calculateColumnWidths(table);
@@ -160,5 +161,5 @@ int writeTable(const char* filename, Table* table)
     }
 
     fclose(out);
-    return 0;
+    return true;
 }

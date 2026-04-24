@@ -1,4 +1,5 @@
 #include "csvPrinter.h"
+#include <stdbool.h>
 #include <stdio.h>
 
 int main(int argc, char* argv[])
@@ -15,12 +16,12 @@ int main(int argc, char* argv[])
 
     Table table = { 0 };
 
-    if (readCsv(input, &table) != 0) {
+    if (!readCsv(input, &table)) {
         fprintf(stderr, "Error reading CSV file: %s\n", input);
         return 1;
     }
 
-    if (writeTable(output, &table) != 0) {
+    if (!writeTable(output, &table)) {
         fprintf(stderr, "Error writing output file: %s\n", output);
         freeTable(&table);
         return 1;

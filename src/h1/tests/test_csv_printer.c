@@ -1,5 +1,6 @@
 #include "../csvPrinter.h"
 #include <assert.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -7,8 +8,8 @@ void testIsNumber()
 {
     printf("Testing isNumber...\n");
 
-    assert(isNumber("123") == 1);
-    assert(isNumber("abc") == 0);
+    assert(isNumber("123") == true);
+    assert(isNumber("abc") == false);
 
     printf("isNumber tests passed\n");
 }
@@ -18,9 +19,9 @@ void testReadCsv()
     printf("Testing readCsv...\n");
 
     Table table = { 0 };
-    int result = readCsv("tests/test_files/test1.csv", &table);
+    bool result = readCsv("tests/test_files/test1.csv", &table);
 
-    assert(result == 0);
+    assert(result == true);
     assert(table.numCols == 3);
     assert(table.numRows == 2);
 
@@ -55,8 +56,8 @@ void testWriteTable()
     table.data[1][0] = strdup("long string");
     table.data[1][1] = strdup("28.7");
 
-    int result = writeTable("tests/test_files/output_test.txt", &table);
-    assert(result == 0);
+    bool result = writeTable("tests/test_files/output_test.txt", &table);
+    assert(result == true);
 
     FILE* out = fopen("tests/test_files/output_test.txt", "r");
     assert(out != NULL);
@@ -81,9 +82,9 @@ void testEmptyCells()
     printf("Testing emptyCells...\n");
 
     Table table = { 0 };
-    int result = readCsv("tests/test_files/test2.csv", &table);
+    bool result = readCsv("tests/test_files/test2.csv", &table);
 
-    assert(result == 0);
+    assert(result == true);
     assert(table.numCols == 3);
     assert(table.numRows == 2);
 

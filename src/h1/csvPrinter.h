@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdbool.h>
+
 #define MAX_ROWS 100
 #define MAX_COLS 100
 #define MAX_CELL_LENGTH 100
@@ -15,13 +17,7 @@ typedef struct {
 } Table;
 
 // function for reading csv file
-int readCsv(const char* filename, Table* table);
-
-// function for writing table as pseudographics
-int writeTable(const char* filename, Table* table);
-
-// function for free table
+bool readCsv(const char* filename, Table* table);
+bool writeTable(const char* filename, Table* table);
 void freeTable(Table* table);
-
-// function for checking row is number
-int isNumber(const char* str);
+bool isNumber(const char* str);
