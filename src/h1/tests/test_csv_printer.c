@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-void test_is_number()
+void testIsNumber()
 {
     printf("Testing isNumber...\n");
 
@@ -13,7 +13,7 @@ void test_is_number()
     printf("isNumber tests passed\n");
 }
 
-void test_read_csv()
+void testReadCsv()
 {
     printf("Testing readCsv...\n");
 
@@ -39,7 +39,7 @@ void test_read_csv()
     printf("readCsv tests passed\n");
 }
 
-void test_write_table()
+void testWriteTable()
 {
     printf("Testing writeTable...\n");
 
@@ -60,13 +60,23 @@ void test_write_table()
 
     FILE* out = fopen("tests/test_files/output_test.txt", "r");
     assert(out != NULL);
+
+    char buffer[1024] = { 0 };
+    size_t bytesRead = fread(buffer, 1, sizeof(buffer) - 1, out);
     fclose(out);
+
+    assert(strstr(buffer, "Test field 1") != NULL);
+    assert(strstr(buffer, "Test field 2") != NULL);
+    assert(strstr(buffer, "test") != NULL);
+    assert(strstr(buffer, "123") != NULL);
+    assert(strstr(buffer, "long string") != NULL);
+    assert(strstr(buffer, "28.7") != NULL);
 
     freeTable(&table);
     printf("writeTable tests passed\n");
 }
 
-void test_empty_cells()
+void testEmptyCells()
 {
     printf("Testing emptyCells...\n");
 
@@ -92,10 +102,10 @@ int main()
 {
     printf("Running CSV Printer tests...\n\n");
 
-    test_is_number();
-    test_read_csv();
-    test_write_table();
-    test_empty_cells();
+    testIsNumber();
+    testReadCsv();
+    testWriteTable();
+    testEmptyCells();
 
     printf("\nAll tests passed\n");
     return 0;
